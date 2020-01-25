@@ -14,6 +14,10 @@
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
 #endif
 
+float tempc;  //variable to store temperature in degree Celsius
+float tempf;  //variable to store temperature in Fahreinheit 
+float vout;  //temporary variable to hold sensor reading
+
 
 BluetoothSerial SerialBT;
 
@@ -24,14 +28,12 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 #define LOGO16_GLCD_HEIGHT 16 
 #define LOGO16_GLCD_WIDTH  16 
+
 int DSMpin = 16;//DSM501A input D8
 
 int MQpin = 34; //MQ Pin
-
-int LM351 = 35;
-
-int LM352 = 36;
-
+const int sensor1=12; // LM35 Sensor 1
+const int sensor2=13;  // LM35 Sensor 2
 
 int sensorValue;
 
@@ -71,6 +73,10 @@ void setup() {
   display.setTextColor(WHITE);
   
   display.setCursor(0,0);
+  
+pinMode(sensor1,INPUT); // Configuring pin A1 as input
+pinMode(sensor2,INPUT); // Configuring pin A1 as input
+
 
   starttime = millis(); 
   
@@ -104,16 +110,34 @@ void loop() {
     display.setCursor(0,15);
     display.print("air sensor: "+ String(analogRead(MQpin)/40.95)+"%");
     display.display();
-    
   
-  
-  
-  String s = "*" +String(concentration) + "#" +String(analogRead(MQpin)/40.95) + "~";
-    SerialBT.print(s);
+vout=analogRead(sensor1);
 
+vout=analogRead(sensor1);
+vout=(vout*500)/4095;
+tempc=vout; // Storing value in Degree Celsius
+
+Serial.print("Sensor ar A0 value in DegreeC=");
+Serial.print("\t");
+Serial.println(tempc);
+ //Delay of 1 second for ease of viewing 
+
+vout=analogRead(sensor2);
+vout=(vout*500)/4095;
+tempf=vout; // Storing value in Degree Celsius
+
+Serial.print("Sensor at A1 value in DegreeC=");
+Serial.print("\t");
+Serial.print(tempf);
+Serial.println();
     
 
   starttime = millis(); 
+
+    String s = "*" +String(concentration) + "#" +String(analogRead(MQpin)/40.95) + "#" + String(tempc)+ "#"+ String(tempf) + "~";
+    SerialBT.print(s);
+
+
     
   }
  }
