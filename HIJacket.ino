@@ -1,13 +1,9 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-
+#include "BluetoothSerial.h"
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 32 // OLED display height, in pixels
-
-
-#include "BluetoothSerial.h"
-
 
 
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
